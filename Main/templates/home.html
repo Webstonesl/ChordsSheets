@@ -1,0 +1,20 @@
+{% extends "main.html" %}
+{% block main %}
+<button style="float:right;" class="main" onclick="window.location.href='/shows/new'">Add Event</button>
+<div style='width:fit-content;'><h1>Up Coming Shows</h1></div>
+
+{% for group in events%}
+<h2>{{group.title}}</h2>
+
+{% for event in group.events%}
+    <p class="editable" onclick="window.location.href='{{event.location}}'"><b>{{event.title}}</b></br>
+        {{event.start}}
+    </p>
+
+{%endfor%}
+{{event}}</br>
+{% empty %}
+<i>No Upcoming Shows</i>
+{%endfor%}
+
+{% endblock main %}

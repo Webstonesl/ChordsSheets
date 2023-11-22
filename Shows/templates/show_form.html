@@ -1,0 +1,137 @@
+<form action='{{event.location}}' method='POST'>
+{% csrf_token %}
+<table>
+    <tr>
+    <td>
+    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+    </td>
+    <td>
+        <input type="text" name="title" placeholder="Add Name" value="{{event.title}}" required></input>
+    </td>
+    <tr>
+        <td>
+            <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm112 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z"/></svg>
+        </td>
+        <td>
+
+            <input type="datetime-local" name="start" value="{{event.format_start}}" required></input>
+        </td>
+</tr>
+
+
+<tr>
+    <td style="vertical-align: top;">
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>
+    </td>
+    <td>
+        <table class="users">
+            <tr><th>User</th><th>Role</th></tr>
+            {% for role in roles %}
+            <tr>
+                <td class="username">{{role.user}}</td>
+                <td>{{role.role.name}} <input type="hidden" name="{{role.user}}_role" value="{{role.role.value}}"></input></td>
+                <td>{% if role.editable %}<button style="width:100%;" type="button" onclick="remove_row(event)">Remove</button>{% endif %}</td>
+            </tr>
+            {% endfor %}
+            <tr class="add_row"><td><input></input></td>
+            <td>
+                <select list="roles">    
+                {% for element in roleNames %}
+                    <option value="{{element.value}}">{{element.label}}</option>
+                {% endfor %}
+                </select>
+            </td>
+            <td><button style="width:100%;" type="button">Add</button></td>
+        </tr>
+            
+        </table>
+        <script> 
+            var tbl = document.currentScript.previousElementSibling;
+            function remove_row(event) {
+                let el = event.target;
+                while(el.tagName !== "TR") {
+                    el = el.parentElement
+                }
+                el.remove()
+            }
+            function add_new(event) {
+                let add_row = tbl.getElementsByClassName("add_row")[0]
+                let nm = add_row.getElementsByTagName('input')[0]
+                let tg = add_row.getElementsByTagName('select')[0]
+                let uns = document.getElementsByClassName('username');
+                for (let i = 0; i < uns.length; i++) {
+                    console.log(uns[i].innerHTML)
+                    if(uns[i].innerHTML ===nm.value) {
+                        alert('User already added');
+                        return;
+                    }
+                }
+                fetch('/accounts/check?'+ new URLSearchParams({
+                    username: nm.value,
+                    
+                })).then((response) => {
+                    response.json().then(
+                        (data) => {
+                            if (data.type === "none") {
+                                alert("No")
+                                return
+                            }
+                            if (data.type === "user") {
+                                let tr = document.createElement("tr")
+                                let tdName = document.createElement('td')
+                                let tdSelect = document.createElement('td')
+                                let select = document.createElement('select')
+                                let tdButton = document.createElement('td')
+                                let button = document.createElement('button')
+                                tdName.innerHTML = nm.value;
+                                tdName.classList.add('username')
+                                tr.insertBefore(tdName,null)
+                                tr.insertBefore(tdSelect,null)
+                                tdSelect.insertBefore(select,null)
+                                tr.insertBefore(tdButton,null)
+                                select.name = `${nm.value}_role`
+                                select.innerHTML = `{% for element in roleNames %}
+                                <option value="{{element.value}}">{{element.label}}</option>
+                            {% endfor %}`
+                                nm.value = ''
+                                select.value = tg.value
+                                tdButton.insertBefore(button,null)
+                                button.innerHTML = 'Remove'
+                                button.type = "button"
+                                button.addEventListener('click', remove_row)
+                                add_row.parentElement.insertBefore(tr,add_row)
+                            }
+                        } 
+                    )
+                })
+                
+                console.log(tg);
+
+            }
+            tbl.getElementsByClassName("add_row")[0].getElementsByTagName('button')[0].addEventListener("click",add_new);
+        </script>
+    </td>
+</tr>
+
+
+</table>
+{%if continue%}
+<input type="hidden" name="value" continue=""></input>
+{% endif %}
+<input class="delete" type="hidden" name="delete" value="False"> </input>
+<script>
+    function submit_delete(event) {
+        let form = event.target;
+        while(form.tagName !== "FORM") {
+            form = form.parentElement;
+        }
+        form.getElementsByClassName('delete')[0].value="True"
+
+        form.submit()
+    }
+</script>
+<button type="submit" class="main">Submit</button>{%if event.pk %}<button type="button" onclick="submit_delete(event)">Delete</button>{%endif%}
+<datalist id="roles">
+
+</datalist>
+</form>

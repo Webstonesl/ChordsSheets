@@ -1,0 +1,4 @@
+function highlight(element) {
+    
+} 
+

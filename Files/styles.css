@@ -1,0 +1,145 @@
+body {
+    margin: 0pt;
+}
+
+
+
+div.navbar {
+    display: block;
+
+ 
+    min-height: 1cm;
+    background-color: white;
+    box-shadow: 0 0 .5cm .1mm;
+}
+div.navbar>ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+div.navbar>ul>li {
+    float:left;
+}
+div.navbar>ul>li.right {
+    float:right;
+}
+
+div.navbar>ul li>a, li.dropdown {
+    display: inline-block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+} 
+
+
+dialog {
+    display: block;
+    border: none;
+    position: absolute;
+    height: fit-content;
+    width: fit-content;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+}
+
+table+button {
+    margin-top: 1cm;
+}
+
+input {
+    padding: 5pt;
+    border-radius: 0pt;
+    border: solid 1pt;
+}
+
+button, input[type="button"], input[type="submit"] {
+    font: inherit;
+    padding: 10pt;
+    border: none;
+
+    cursor: pointer;
+    text-transform: capitalize;
+}
+
+button.main {
+    border: solid 1pt;
+    
+    background-color: black;
+    color: white;
+    
+}
+
+button.secondary {
+    background-color: inherit;
+}
+
+dialog>button:last-child {
+    display: block;
+    float: right;
+}
+body>main {
+    margin-left: 1em;
+}
+.editable:hover {
+    cursor: context-menu;
+
+}
+td>svg {
+    padding: 1mm;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+    'header header header header header header'
+    'menu main main main right right'
+    'menu footer footer footer footer footer';
+    gap: 10px;
+    padding: 10px;
+}
+select {
+   background-color: inherit; 
+   border: none;
+   vertical-align:middle;
+}
+.dropdown {
+
+}
+
+.dropdown>.dropdown-content {
+    display: none;
+
+    
+}
+
+.dropdown:hover>.dropdown-content {
+    display: block;
+    border: solid black 1pt;
+    list-style: none;
+    width: min-content;
+    padding: 1pt;
+    margin: 2pt;
+}
+.dropdown:hover>.dropdown-content>li {
+    padding: 2pt 5pt;
+    
+    user-select: none;
+}
+.dropdown:hover>.dropdown-content>li:hover {
+    padding: 2pt 5pt;
+    user-select: none;
+    background-color: #DDD;
+}
+.dropdown:hover>.dropdown-content>li:active {
+
+
+    background-color: #BBB;
+}
+
+.username {
+    font-family: monospace;
+}

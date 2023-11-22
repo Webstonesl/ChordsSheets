@@ -1,0 +1,26 @@
+{% extends "dialog.html" %}
+
+{% block dialog %}
+<h1>Create Account</h1>
+{% for em in form.errors %}
+<div class="error">{{em}}</div>
+{% endfor %}
+<form method="POST">
+{% csrf_token %}
+
+<table>
+
+    <tbody>
+    
+    {% for field in form %}
+
+        <tr><td>{{field.label}}:</td><td>{{field}}{{field.errors}}</td></tr>
+        
+    {% endfor %}
+    </tbody>
+</table>
+<button class="main">Create Account</button> 
+</form>
+
+<button class="secondary" type="button" onclick="window.location.href='/login'">Already Have an Account?</button>
+{% endblock dialog %}

@@ -1,0 +1,281 @@
+
+{% extends "main.html" %}
+
+{% block head %}
+{{block.super}}
+<link rel="stylesheet" href="/styles_chords.css"> </link>
+<script src="/elements.js"></script>
+{{ cs | json_script:"song-info" }}
+
+<script>
+    var section_titles = [];
+    var item_count = 0;
+    function get_section_count() {
+        let data = JSON.parse(document.getElementById("song-info").textContent);    
+        let n = 0;
+        for(let i=0;i<data.length;i++) {
+            if (data[i]["type"]==="section") {
+                section_titles.push(data[i]["title"])
+                n = n + 1;
+            }
+        }
+        return n;
+    }
+
+    var section_nr = get_section_count()
+    function save() {
+
+    }
+    function changed(id) {
+        let data = JSON.parse(document.getElementById("song-info").textContent);
+        data[id]= document.getElementById(id).value
+        document.getElementById("song-info").textContent=JSON.stringify(data)
+    }
+    function addElement(tp,element) {
+        let adder = document.getElementById('add_element')
+        let e = document.createElement('div',)
+        if (tp == 1) { // Add Section
+            section_titles.push('')
+            e.classList.add("section")
+            e.id = `section_${section_nr}`
+            section_nr = section_nr += 1
+            e.innerHTML = `{% include "section_element.html" %}`
+
+        } else if (tp == 0) {
+            e.classList.add("transpose")
+            e.innerHTML = `{% include "transpose_element.html" %}`
+        } else if (tp == 2) {
+            e.classList.add("repeat")
+            e.innerHTML = `{% include "repeat_element.html" %}`
+            
+        }
+
+        adder.parentElement.insertBefore(e,adder)
+        setoptions()
+    }
+
+    function highlight(element) {
+        console.log(element.tagName)
+        if(element.tagName === "SELECT") {
+            document.getElementById( element.value).style.background = "#EEE";
+        } else {
+            
+        }
+    } 
+    function clearHighlight(element) {
+        console.log(element.tagName)
+        if(element.tagName === "SELECT") {
+            document.getElementById( element.value).style.background = "#FFF";
+        } else {
+            if (element.tagName === "DIV") {
+                clearHighlight(element.getElementsByTagName('SELECT')[0])
+                
+            }
+        }
+    }
+    function getCaretCharacterOffsetWithin(element) {
+        var caretOffset = 0;
+        var doc = element.ownerDocument || element.document;
+        var win = doc.defaultView || doc.parentWindow;
+        var sel;
+        if (typeof win.getSelection != "undefined") {
+            sel = win.getSelection();
+            if (sel.rangeCount > 0) {
+                var range = win.getSelection().getRangeAt(0);
+                var preCaretRange = range.cloneRange();
+                preCaretRange.selectNodeContents(element);
+                preCaretRange.setEnd(range.endContainer, range.endOffset);
+                caretOffset = preCaretRange.toString().length;
+            }
+        } else if ( (sel = doc.selection) && sel.type != "Control") {
+            var textRange = sel.createRange();
+            var preCaretTextRange = doc.body.createTextRange();
+            preCaretTextRange.moveToElementText(element);
+            preCaretTextRange.setEndPoint("EndToEnd", textRange);
+            caretOffset = preCaretTextRange.text.length;
+        }
+        return caretOffset;
+    }
+    function onkeyuphandler(section, event){
+        if (event.inputType==="insertParagraph") {
+            console.log(event)
+            let element = event.target.parentElement;
+            let line = document.createElement('line')
+            element.insertBefore(line,event.target.nextElementSibling)
+            line.outerHTML = `<line spellcheck="false" tabindex="1" onfocus="canvas_click(event)" onclick="canvas_click(event)"  onbeforeinput="onkeyuphandler(${section_nr},event)" contentEditable="true"></line>`
+            line.focus()
+            event.preventDefault()
+            return;
+        }
+        let off = getCaretCharacterOffsetWithin(event.target)
+
+
+        let len = event.target.innerHTML.length;
+        var text = event.target.childNodes[0];
+        for (let i=0;true;i++) {
+            var text = event.target.childNodes[i];
+            console.log(text)
+            console.log(off)
+            if (text.nodeName !== "#text") {
+                if (off <= text.innerHTML.length) {
+                    break;
+                }
+                off = off - text.innerHTML.length;
+                continue;
+            } else
+            if (off>=text.length) {
+                off = off - text.length;
+            } else {
+                break;
+            }
+            
+            
+        }
+        if (event.target.tagName === 'LINE') {
+            if (event.data === '\\') {  
+                
+                if (off==text.length) {
+                    text.textContent += ' '
+                }
+                
+
+                let chord = document.createElement('chord');
+
+                chord.attributes['contentEditable'] = false;
+                chord.onkeyup = onkeyuphandler;
+                
+
+                event.target.insertBefore(chord,text.splitText(off))
+                
+                event.preventDefault()
+                chord.focus()
+            } 
+        }
+        
+
+    }
+
+    function canvas_click(event){
+        console.log(event)
+    }
+
+    function setoptions() {
+        let selects = document.getElementsByClassName('section_select')
+        for(let i=0;i<selects.length;i++) {
+            let select = selects[i];
+
+            let options = []
+            //for(let j=0;j<selects.length;j++) {
+            //    select.children[j].value
+            //}
+            for(let j=0;j<section_titles.length;j++) {
+                let option = null;
+                for (let k=0;k<select.children.length;k++) {
+                    if (select.children[k].value === `section_${j}`) {
+                        option = select.children[k]
+                        break
+                    }
+                }
+                if (option == null) {
+                    option = document.createElement('option')
+                    option.value = `section_${j}`
+                    select.insertBefore(option, null);
+                }
+                if ("" === section_titles[j]) {
+                    option.innerHTML = `${j+1}. <i>Unnamed Section</i>`
+                } else {
+                    option.innerHTML = `${j+1}. ${section_titles[j]}`;
+                }
+            }   
+        }
+    }
+
+    function section_title_change(section, event) {
+        section_titles[section] =event.target.value;
+        setoptions()
+    }
+
+</script>
+
+{% endblock head %}
+{% block main %}
+<form method="POST">
+    {% csrf_token %}
+<div class="grid-container">
+    <div>
+        <h1><input id="title" placeholder="Enter Title" style="font:inherit;width:100%;" value="{{cs.title}}" onchange="changed('title')"></input></h1>
+        <p style="">
+            <b>
+                <table>
+                    <tr>
+                        <td style="text-align:center;">
+                            <select name="metre_1" id="metre_1" value="{{cs.metre_1 | default:"4"}}" default="4"  onchange="changed('metre_1')"> 
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="6">6</option>
+                        </select></td>
+                        <td rowspan="2"><input id='bpm' type="number" value="{{cs.bpm}}"  onchange="changed('bpm')"></input></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">
+                        <select name="metre_2" id="metre_2" value="{{cs.metre_2}}" onchange="changed('metre_2')">
+                            <option value="4">4</option>
+                            <option value="8">8</option>
+                            <option value="12">12</option>
+                        </select>
+                    </td>
+                    </tr>
+                </table>
+            </b>
+        </p>
+
+
+        <p>Key = <select name="key_nr" id="key" style="font:inherit;"  onchange="changed('key')">
+            <option value="0">A</option>
+            <option value="1">A&sharp; / B&flat;</option>
+            <option value="2">B</option>
+            <option value="3">C</option>
+            <option value="4">C&sharp; / D&flat;</option>
+            <option value="5">D</option>
+            <option value="6">D&sharp; / E&flat;</option>
+            <option value="7">E</option>
+            <option value="8">F</option>
+            <option value="9">F&sharp; / G&flat;</option>
+            <option value="10">G</option>
+            <option value="11">G&sharp; / A&flat;</option>
+        </select>
+        <select name="key_mod" id="mod" onchange="changed('mod')">
+            <option value="M">Major</option>
+            <option value="m">(Natural) Minor</option>
+        </select>
+    </div>
+    <div></div>
+    <div></div>
+    <div class="menu">
+        <buttonrow>
+        <button class="main" onclick="save">Save</button>
+        </buttonrow>
+    </div>
+
+
+
+</div>
+<div id="content" class="content" onmouseover>
+    <div id="add_element" class="dropdown">
+    + Add Element
+    <ul class="dropdown-content">
+        <li onclick="addElement(0,event.target)"> Transpose </li>
+        <li onclick="addElement(1,event.target)"> Section </li>
+        <li onclick="addElement(2,event.target)"> Repeat </li>
+    </ul>
+    </div>
+</div>
+</form>
+    
+{% endblock main %}
+{% block right %}
+
+
+{% endblock right %}
+
+

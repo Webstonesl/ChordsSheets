@@ -1,0 +1,4 @@
+<h2><input placeholder="Section ${section_nr}" onchange="section_title_change(${section_nr-1},event)"></input></h2>
+<input type="hidden" name="section_${section_nr-1}" value='{"cursor":[0,0], content:['']}'>
+<section-content></section-content>
+{% comment %} <div class="section_editor" autofocus> <line spellcheck="false" tabindex="1" onfocus="canvas_click(event)" onclick="canvas_click(event)"  onbeforeinput="onkeyuphandler(${section_nr-1},event)" contentEditable="true"></line> </div> {% endcomment %}

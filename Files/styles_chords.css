@@ -1,0 +1,87 @@
+.editable {
+    border-bottom: solid 2px #AAA;
+}
+.editable:hover {
+    background: #EEE;
+}
+select, option, input {
+    font: inherit;
+}
+buttonrow {
+    width:100%;
+    display:flex;
+}
+buttonrow>button {
+    width:100%;
+}
+div.section {
+    margin-left:5pt;
+    margin-right:5pt;
+    padding-top:0px;
+    padding-bottom:2pt;
+    padding-left:2pt;
+    border-left:solid 1px;
+}
+div.section:first-child {
+    margin-top:0px;
+}
+div.content {
+    margin-right: 5pt;
+
+    overflow-y:scroll;
+    overflow-x:hidden;
+}
+div.content>div {
+    margin: 5pt 0pt;
+
+}
+section-content {
+    display: block;
+    line-height: 2;
+    padding: 5pt;
+    cursor: text;
+}
+
+section-text {
+    white-space: pre;
+    display: inline-block;
+    
+}
+
+section-text:focus {
+    border: none;
+    outline: none;
+
+}
+
+
+
+@keyframes csflash {
+    from {
+        border-left:solid #4455FFFF 2px ;
+    }
+    to {
+        border-left:solid #4455FF00 2px ;
+    }
+}
+
+section-chord:empty, section-text:empty {
+    border-bottom: dashed black 1pt;
+    min-width: 5pt;
+    min-height: 1em;
+}
+section-text:empty:only-child {
+    min-width: 1cm;
+}
+section-chord {
+    display: inline-block;
+    position: absolute; 
+    padding: 1pt 2pt 1pt 2pt;
+    background: #EFEFEFEE;
+    transform: translateY(-16pt); 
+  
+
+    line-height: 1.08;
+    text-align: center;
+
+}

@@ -1,0 +1,10 @@
+{% extends "main.html" %}
+{% block main %}
+<button style="float:right;" class="main" onclick="window.location.href='./new'">New</button>
+<h1>
+    Chordsheets
+</h1>
+{% for sheet in sheets  %}
+<h2>{{sheet.title}}</h2>
+{% endfor %}
+{% endblock main %}
