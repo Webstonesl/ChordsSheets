@@ -43,13 +43,18 @@ class SectionEditableElement extends HTMLElement {
             return;
         }
         if (event.inputType ==="deleteContentBackward") {
-            if (this.parentNode.children.length>1)
-            if(this.innerText === "") {
+            if ((this.parentNode.children.length>1)&&(this.innerText === ""))
+                {
                 this.previousElementSibling.focus()
-
+                
                 this.remove()
                 event.preventDefault()
                 return
+            } else {
+                if(this.innerText === "") {
+                this.parentElement.tryRemove(this)
+                event.preventDefault()
+                }
             }
 
         }
@@ -94,7 +99,10 @@ class SectionTextElement extends SectionEditableElement {
         super()
     }
     handleReturn() {
-        console.log("text")
+        let nx = this.parentElement.nextElementSibling;
+        let content = this.parentElement.parentElement;
+        let nl = new SectionLineElement()
+        content.insertBefore(nl,nx)
     }
     
 }
@@ -116,6 +124,9 @@ class SectionLineElement extends HTMLElement {
             let text = new SectionTextElement()
             this.appendChild(text)
         }
+    }
+    tryRemove(el) {
+        console.log(el)
     }
 }
 
